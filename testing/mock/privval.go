@@ -2,7 +2,7 @@ package mock
 
 import (
 	"errors"
-
+	tmbytes "github.com/cometbft/cometbft/libs/bytes"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -18,6 +18,10 @@ var _ tmtypes.PrivValidator = PV{}
 // Only use it for testing.
 type PV struct {
 	PrivKey cryptotypes.PrivKey
+}
+
+func (pv PV) SignP2PMessage(chainID, uID string, hash tmbytes.HexBytes) ([]byte, error) {
+	return pv.PrivKey.Sign(tmtypes.P2PMessageSignBytes(chainID, uID, hash))
 }
 
 func NewPV() PV {
